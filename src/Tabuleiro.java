@@ -1,3 +1,7 @@
+import java.util.Random;
+
+import javax.swing.JOptionPane;
+
 
 public class Tabuleiro {
 	
@@ -9,35 +13,100 @@ public class Tabuleiro {
 	 *  
 	 **********************************************************/
 	private Marcador[][] tabuleiro = new Marcador[3][3];
+	private int jogadas = 0;
+	private	Interface tela;
+	private boolean jogoContraMaquina = false;
 	
-	public boolean efetuaJogada(Marcador marcador, Coordenada coordenada) {
-		
+	public void setInterface(Interface tela) {
+		this.tela = tela;
+	}
+	
+	public void atualizaTabuleiro() {
+		tela.atualizaTela();
+	}
+	
+	public boolean efetuaJogada(Coordenada coordenada) {
+		 
 		if (this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] == null) {
-			this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = marcador;
+			if (jogadas%2 == 0) {
+				this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = new MarcadorX();
+				jogadas++;
+				if (!verificaFimJogo()) {
+					efetuaJogadaMaquina();
+				}
+			} else {
+				this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = new MarcadorO();
+				jogadas++;
+			}
 			return true;
 		} 
 		return false;		
 	}
 	
+	private void efetuaJogadaMaquina(){
+		int indice = 0;
+		Random r = new Random();
+		
+		if (jogoContraMaquina) {
+			do {
+				indice = (int) (r.nextDouble() * (9-0));
+			}  while(!efetuaJogada(new Coordenada(indice)));
+		}
+	}
+	
 	public Marcador getMarcadorTabuleiro(Coordenada coordenada){
-		if(tabuleiro[coordenada.getLinha()][coordenada.getColuna()]== null){
+		if(tabuleiro[coordenada.getLinha()][coordenada.getColuna()]== null) {
 			return new Marcador();
-		}else return tabuleiro[coordenada.getLinha()][coordenada.getColuna()];
+		} else { 
+			return tabuleiro[coordenada.getLinha()][coordenada.getColuna()];
+		}
 	}	
 	
-	public void limparTabuleiro() {
+	public boolean verificaFimJogo() {
+		return jogadas == 9;
+	}
+	
+	public void reiniciarJogo() {
+		jogadas = 0;
 		for (int l = 0; l < 3; l++) {
 			for (int c = 0; c < 3; c++) {
 				this.tabuleiro[l][c] = null;
 			}			
 		}
+		this.atualizaTabuleiro();
+		if (JOptionPane.showConfirmDialog(null, "Deseja jogar contra a o computador?", "Escolha Adiversario", JOptionPane.YES_NO_OPTION) == 0) {
+			jogoContraMaquina = true;
+		} else {
+			jogoContraMaquina = false;
+		}
+		
 	}
 	
+	
 	public boolean verificaVitoria(Marcador marcador) {
+		boolean resultado = false;
+		
+		resultado = verificaColunas(marcador);
+		
+		if (!resultado) {
+			resultado = verificaLinhas(marcador);
+		}
+		
+		if (!resultado) {
+			resultado = verificaDiagonaPrimaria(marcador);
+		}
+		
+		if (!resultado) {
+			resultado = verificaDiagonalSecundaria(marcador);
+		}
+		
+		return resultado;
+	}
+	
+	private boolean verificaColunas(Marcador marcador) {
 		Marcador marcadorTabuleiro;
 		boolean resultado = false;
 		
-		// Verifica colunas
 		for (int c = 0; c < 3; c++) {
 			resultado = false;
 			for (int l = 0; l < 3; l++) {
@@ -59,72 +128,17 @@ public class Tabuleiro {
 				return resultado;
 			}			
 		}
-		
-		 
-		if (!resultado) {			
-			// Verifica linhas
-			for (int l = 0; l < 3; l++) {
-				resultado = false;			
-				for (int c = 0; c < 3; c++) {
-					marcadorTabuleiro = this.tabuleiro[l][c];
-					if (marcadorTabuleiro == null) {
-						resultado = false;
-						break;
-					} 
-					
-					resultado = marcadorTabuleiro.equals(marcador);
-					
-					
-				}
-				
-				if (resultado) {
-					return resultado;
-				}			
-			}			
-		}
-		
-		if (!resultado) {
-			resultado = verificaDiagonaPrimaria(marcador);
-		}
-		
-		if (!resultado) {
-			resultado = verificaDiagonalSecundaria(marcador);
-		}
-		
 		return resultado;
+	}
+	
+	private boolean verificaLinhas(Marcador marcador) {	
+		Marcador marcadorTabuleiro;
+		boolean resultado = false;
 		
-		
-		
-		/*if (!resultado) {
-			
-			// Diagonal principal 
-			for (int i = 0; i < 3; i++){
-				marcadorTabuleiro = this.tabuleiro[i][i];
-				if (marcadorTabuleiro == null) {
-					resultado = false;
-					break;
-				} 
-				
-				resultado = marcadorTabuleiro.equals(marcador);
-				
-				if (!resultado) {
-					break;
-				}
-			}
-			
-			if (resultado) {
-				return resultado;
-			}			
-		}*/
-		
-		
-		
-
-		/*if (!resultado) {
-			int c = 3;
-			// Diagonal secundaria 
-			for (int l = 0; l < 3; l++){
-				c = c - 1;
+		// Verifica linhas
+		for (int l = 0; l < 3; l++) {
+			resultado = false;			
+			for (int c = 0; c < 3; c++) {
 				marcadorTabuleiro = this.tabuleiro[l][c];
 				if (marcadorTabuleiro == null) {
 					resultado = false;
@@ -141,9 +155,8 @@ public class Tabuleiro {
 			if (resultado) {
 				return resultado;
 			}			
-		}*/
-		
-	
+		}
+		return resultado;
 	}
 		
 	private boolean verificaDiagonaPrimaria(Marcador marcador) {

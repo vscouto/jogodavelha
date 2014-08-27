@@ -15,13 +15,17 @@ import javax.swing.JPanel;
  * @author Thiago Moura
  */
 public class Interface extends JFrame{
-    JPanel paineltabuleiro1;
+
+	private static final long serialVersionUID = 1L;
+	JPanel paineltabuleiro1;
     JButton [] botoestabuleiro1;
     Tabuleiro tabuleiro;
     public Interface(Tabuleiro tab){
         tabuleiro = tab;
         botoestabuleiro1 = new JButton[9];
         paineltabuleiro1 = new JPanel();
+        
+        tab.setInterface(this);
         
         paineltabuleiro1.setLayout(new GridLayout(3,3));
         for (int k=0;k<9;k++){
@@ -35,7 +39,8 @@ public class Interface extends JFrame{
         this.setLocationRelativeTo(null);
 
     }
-    public void atualizaTabuleiro(){
+    
+    public void atualizaTela(){
         for(int k = 0; k<9;k++){
             botoestabuleiro1[k].setText(tabuleiro.getMarcadorTabuleiro(new Coordenada(k)).getValor());
         }

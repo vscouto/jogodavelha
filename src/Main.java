@@ -15,8 +15,9 @@ public class Main {
     public static void main(String[] args) {
         Tabuleiro tab = new Tabuleiro();
         Interface frame = new Interface(tab);
-
-        frame.atualizaTabuleiro();
         frame.setVisible(true);
+
+        tab.reiniciarJogo();
+        
     }
 }
