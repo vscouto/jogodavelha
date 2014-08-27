@@ -13,7 +13,7 @@ public class Computador {
 		
 		coordenada = new Coordenada (linha,coluna);
 		
-		
+		//teste
 		
 	}
 	
