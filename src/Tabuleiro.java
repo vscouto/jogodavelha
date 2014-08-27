@@ -38,5 +38,11 @@ public class Tabuleiro {
 		}
 		System.out.println();
 	}
+        
+        public Marcador getMarcadorTabuleiro(Coordenada coordenada){
+            if(tabuleiro[coordenada.getLinha()][coordenada.getColuna()]== null){
+                return new Marcador();
+            }else return tabuleiro[coordenada.getLinha()][coordenada.getColuna()];
+        }
 
 }
