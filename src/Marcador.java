@@ -1,7 +1,12 @@
 
 public class Marcador {
+	protected String valor = " ";
 
 	public String getValor() {
-		return "";		
-	} 
+		return valor;		
+	}
+	
+	public boolean equals(Marcador marcador) {
+		return (marcador.getValor() == this.valor);
+	}
 }
