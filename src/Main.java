@@ -13,11 +13,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Tabuleiro tab = new Tabuleiro();
-        Interface frame = new Interface(tab);
-        frame.setVisible(true);
-
-        tab.reiniciarJogo();
-        
+    	Tela tela = new Tela();
+    	tela.setVisible(true);       
     }
 }

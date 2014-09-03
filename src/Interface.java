@@ -18,13 +18,14 @@ public class Interface extends JFrame{
 	private static final long serialVersionUID = 1L;
 	JPanel paineltabuleiro1;
     JButton [] botoestabuleiro1;
+    
     Tabuleiro tabuleiro;
     public Interface(Tabuleiro tab){
         tabuleiro = tab;
         botoestabuleiro1 = new JButton[9];
         paineltabuleiro1 = new JPanel();
         
-        tab.setInterface(this);
+        //tab.setInterface(this);
         
         paineltabuleiro1.setLayout(new GridLayout(3,3));
         for (int k=0;k<9;k++){

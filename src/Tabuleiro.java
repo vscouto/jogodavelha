@@ -1,6 +1,3 @@
-import java.util.Random;
-
-import javax.swing.JOptionPane;
 
 
 public class Tabuleiro {
@@ -12,38 +9,38 @@ public class Tabuleiro {
 	 *  2    |   |   
 	 *  
 	 **********************************************************/
-	private Marcador[][] tabuleiro = new Marcador[3][3];
-	private int jogadas = 0;
-	private	Interface tela;
-	private boolean jogoContraMaquina = false;
+	private Marcador[][] tabuleiro;
+	private	PanelTabuleiro panelTabuleiro;
+	private	Controlador controlador;
 	
-	public void setInterface(Interface tela) {
-		this.tela = tela;
+	public Tabuleiro(Controlador contralador) {
+		this.tabuleiro = new Marcador[3][3];
+		this.panelTabuleiro = new PanelTabuleiro(this);
+		this.controlador = contralador;
+	}	
+	
+	public PanelTabuleiro getPanelTabuleiros() {
+		return this.panelTabuleiro;
 	}
 	
 	public void atualizaTabuleiro() {
-		tela.atualizaTela();
+		this.panelTabuleiro.atualizaTela();
 	}
 	
-	public boolean efetuaJogada(Coordenada coordenada) {
+	public Marcador getMarcadorJogadorAtivo() {
+		return controlador.getMarcadorJogadorAtivo();
+	}
+	
+	public boolean efetuaJogada(Coordenada coordenada, Marcador marcador) {
 		 
 		if (this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] == null) {
-			if (jogadas%2 == 0) {
-				this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = new MarcadorX();
-				jogadas++;
-				if (!verificaFimJogo()) {
-					efetuaJogadaMaquina();
-				}
-			} else {
-				this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = new MarcadorO();
-				jogadas++;
-			}
+			this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = marcador;						
 			return true;
 		} 
 		return false;		
 	}
 	
-	private void efetuaJogadaMaquina(){
+	/*private void efetuaJogadaMaquina(){
 		int indice = 0;
 		Random r = new Random();
 		
@@ -52,36 +49,45 @@ public class Tabuleiro {
 				indice = (int) (r.nextDouble() * (9-0));
 			}  while(!efetuaJogada(new Coordenada(indice)));
 		}
-	}
+	}*/
 	
 	public Marcador getMarcadorTabuleiro(Coordenada coordenada){
 		if(tabuleiro[coordenada.getLinha()][coordenada.getColuna()]== null) {
 			return new Marcador();
 		} else { 
-			return tabuleiro[coordenada.getLinha()][coordenada.getColuna()];
+			return this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()];
 		}
 	}	
 	
 	public boolean verificaFimJogo() {
-		return jogadas == 9;
+		for (int l = 0; l < 3; l++) {
+			for (int c = 0; c < 3; c++) {
+				if (this.tabuleiro[l][c] != null) {
+					return false;
+				}
+			}			
+		}
+		return true;
 	}
 	
 	public void reiniciarJogo() {
-		jogadas = 0;
 		for (int l = 0; l < 3; l++) {
 			for (int c = 0; c < 3; c++) {
 				this.tabuleiro[l][c] = null;
 			}			
 		}
 		this.atualizaTabuleiro();
-		if (JOptionPane.showConfirmDialog(null, "Deseja jogar contra a o computador?", "Escolha Adiversario", JOptionPane.YES_NO_OPTION) == 0) {
+		/*if (JOptionPane.showConfirmDialog(null, "Deseja jogar contra a o computador?", "Escolha Adiversario", JOptionPane.YES_NO_OPTION) == 0) {
 			jogoContraMaquina = true;
 		} else {
 			jogoContraMaquina = false;
-		}
+		}*/
 		
 	}
 	
+	public void finalizaJogada() {
+		this.controlador.finalizaJogada();
+	}
 	
 	public boolean verificaVitoria(Marcador marcador) {
 		boolean resultado = false;
@@ -93,7 +99,7 @@ public class Tabuleiro {
 		}
 		
 		if (!resultado) {
-			resultado = verificaDiagonaPrimaria(marcador);
+			resultado = verificaDiagonaPrincipal(marcador);
 		}
 		
 		if (!resultado) {
@@ -159,7 +165,7 @@ public class Tabuleiro {
 		return resultado;
 	}
 		
-	private boolean verificaDiagonaPrimaria(Marcador marcador) {
+	private boolean verificaDiagonaPrincipal(Marcador marcador) {
 		Marcador marcadorTabuleiro;
 		boolean resultado = false;
 		
@@ -175,8 +181,6 @@ public class Tabuleiro {
 				return false;
 			}
 		}
-		
-		
 		return resultado;		
 	}
 	
@@ -197,37 +201,27 @@ public class Tabuleiro {
 			if (!resultado) {
 				return false;
 			}
-		}	
-		
+		}
 		return resultado;
 	}
+
 	
-	public void imprimeTabuleiro() {
-		String valor = "";
-		for (int l = 0; l < 3; l++) {
-			for (int c = 0; c < 3; c++) {
-				valor = "_";
-				
-				if (this.tabuleiro[l][c] != null) {
-					valor = this.tabuleiro[l][c].getValor();
+	/*public boolean efetuaJogada(Coordenada coordenada) {
+		 
+		if (this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] == null) {
+			if (jogadas%2 == 0) {
+				this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = new MarcadorX();
+				jogadas++;
+				if (!verificaFimJogo()) {
+					efetuaJogadaMaquina();
 				}
-				
-				if (c == 1) {
-					System.out.print("|_" + valor + "_|");
-				} else {
-					System.out.print("_" + valor + "_" );
-				}
-			}	
-			System.out.println();
-		}
-		System.out.println();
-		
-		if (this.verificaVitoria(new MarcadorX())) {
-			System.out.println("Jogador X Ganhou!");
-		} else if (this.verificaVitoria(new MarcadorO())) {
-			System.out.println("Jogador O Ganhou!");
-		}
-		
-		System.out.println();
-	}
+			} else {
+				this.tabuleiro[coordenada.getLinha()][coordenada.getColuna()] = new MarcadorO();
+				jogadas++;
+			}
+			return true;
+		} 
+		return false;		
+	}*/
 }
+

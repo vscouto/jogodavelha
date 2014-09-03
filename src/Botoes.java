@@ -2,9 +2,7 @@
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,11 +22,14 @@ public class Botoes extends JButton implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e) {
-    	if(tabuleiro.efetuaJogada(new Coordenada(indice))){
-            //this.setText(tabuleiro.getMarcadorTabuleiro(new Coordenada(indice)).getValor());
+
+    	
+    	if(tabuleiro.efetuaJogada(new Coordenada(indice), tabuleiro.getMarcadorJogadorAtivo())){            
     		tabuleiro.atualizaTabuleiro();
+            tabuleiro.finalizaJogada();
             
-            if (tabuleiro.verificaVitoria(new MarcadorX())) {
+            //this.setText(tabuleiro.getMarcadorTabuleiro(new Coordenada(indice)).getValor());
+            /*if (tabuleiro.verificaVitoria(new MarcadorX())) {
             	JOptionPane.showMessageDialog(null, "Jogador X Ganhou");
             	tabuleiro.reiniciarJogo();
             } else if (tabuleiro.verificaVitoria(new MarcadorO())) {
@@ -37,7 +38,7 @@ public class Botoes extends JButton implements ActionListener{
             } else if (tabuleiro.verificaFimJogo()) {
             	JOptionPane.showMessageDialog(null, "Empate");
             	tabuleiro.reiniciarJogo();
-            }
+            }*/
             
         }
     }
