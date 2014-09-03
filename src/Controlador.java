@@ -121,11 +121,12 @@ public class Controlador {
 			}
 		}
 		
-		for (int t = 0; t < nrTabuleiros; t++) {
-			if (!tabuleiros.get(t).verificaFimJogo()) {
-				return false;
-			}			
-			
+		boolean fimJogo = false;
+		for (int t = 0; t < nrTabuleiros; t++) {			
+			fimJogo = fimJogo && tabuleiros.get(t).verificaFimJogo();
+		}
+		
+		if (fimJogo) {
 			JOptionPane.showMessageDialog(null, "O jogo terminou empatado!!");
 			return true;
 		}
